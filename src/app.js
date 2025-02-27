@@ -2,19 +2,22 @@ const express = require('express');
 
 const app = express();
 
-const {adminAuth} = require("./middlewares/auth");
-app.use("/admin", adminAuth);
+app.get("/getUserData", (req, res) => {
+  try {
 
-app.get("/user", (req, res) => {
-  res.send("user Data send");
-})
+    // logic of DB called and user data
+   throw new Error("fbnfdksl");
+   res.send("user Data send");
+  }
+  catch(err) {
+    res.status(500).send("something went wrong contact support team");
+  }
+});
 
-app.get("/admin/getAllData", (req, res) => {
-  res.send("All Data send");
-})
-
-app.get("/admin/deleteUser", (req, res) => {
-  res.send("Deleted a user");
+app.use("/", (err, req, res, next) => {
+   if (err) {
+    res.status(500).send("something went wrong");
+   }
 })
 
 
