@@ -68,6 +68,7 @@ app.patch("/user", async (req, res) => {
       returnDocument: "after",
       runValidators: true,
     });
+    console.log(user);
     res.send("user data successfully updated");
   }
   catch (err) {
