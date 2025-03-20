@@ -3,6 +3,7 @@ const authRouter = express.Router();
 const { validateSignUpData } = require("../utils/validation");
 const User = require("../models/user");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 authRouter.post("/signup", async (req, res) => {
   try {
@@ -37,15 +38,15 @@ authRouter.post("/login", async (req, res) => {
     if(!user) {
       throw new Error("Invalid credentials");
     }
-    const isPasswordValid = await user.validatePassword(password);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if(isPasswordValid){
       // create a JWT token
-      const token = await user.getJWT();
+      const token = jwt.sign({ userId: user._id }, "DEV@Tinder111", { expiresIn: "1d" });
 
-      // Add the token to the cookie and send the response back to the user
+    
       res.cookie("token", token, {
-        expires: new Date(Date.now() + 5 * 3600000)
+        expires: new Date(Date.now() + 5 * 3600000),
       });
       res.send("Login successfull!!");
     }
@@ -53,13 +54,17 @@ authRouter.post("/login", async (req, res) => {
       throw new Error("Invalid credentials");
     }
   } catch (err) {
-    res.status(400).send("ERROR" + err.messsage);
+    res.status(400).send("ERROR" + err.message);
   } 
 });
 
+authRouter.post("/logout", async (req, res)  => {
+    res.cookie("token", null, {
+        expires: new Date(Date.now()),
+    })
 
-
-
+    res.send("Logout successfully!!");
+})
 
 
 module.exports = authRouter;
