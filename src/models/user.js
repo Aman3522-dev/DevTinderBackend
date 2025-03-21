@@ -39,11 +39,10 @@ const userSchema = new mongoose.Schema({
     },
     gender : {
         type: String,
-        validate(value){
-            if (!["male", "female", "other"].includes(value)){
-                throw new Error("Gender is not valid");
-            }
-        },
+        enum: {
+            values: ["male","female", "other"],
+            message: '{VALUE} is not supported'
+        }
     },
     photoUrl: {
         type: String,
@@ -68,14 +67,14 @@ const userSchema = new mongoose.Schema({
 userSchema.methods.getJWT = async function () {
     const user = this;
 
-    const token = await jwt.sign({_id: user._id}, "DEV@Tinder$111", {
+    const token = await jwt.sign({_id: user._id}, "MySecret123", {
         expiresIn : "1d",
     });
 
     return token;
 }
 
-userSchema.method.validatePassword = async function (passwordInputByUser) {
+userSchema.methods.validatePassword = async function (passwordInputByUser) {
     const user = this;
     const passwordHash = user.password;
 

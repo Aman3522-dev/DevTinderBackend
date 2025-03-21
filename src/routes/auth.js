@@ -42,7 +42,7 @@ authRouter.post("/login", async (req, res) => {
 
     if(isPasswordValid){
       // create a JWT token
-      const token = jwt.sign({ userId: user._id }, "DEV@Tinder111", { expiresIn: "1d" });
+      const token = jwt.sign({ userId: user._id }, "MySecret123", { expiresIn: "1d" });
 
     
       res.cookie("token", token, {
